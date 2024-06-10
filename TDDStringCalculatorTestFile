@@ -1,0 +1,76 @@
+package com.tdd.stringcalculator;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
+
+public class StringCalculatorTest {
+
+	@Test
+    public void testEmptyString() throws Exception {
+        StringCalculator calculator = new StringCalculator();
+        assertEquals(0, calculator.Add(""));
+    }
+
+    @Test
+    public void testOneNumber() throws Exception {
+        StringCalculator calculator = new StringCalculator();
+        assertEquals(1, calculator.Add("1"));
+    }
+
+    @Test
+    public void testWithTwoNumbers() throws Exception {
+        StringCalculator calculator = new StringCalculator();
+        assertEquals(3, calculator.Add("1,2"));
+    }
+
+    @Test
+    public void testWithMultipleNumbers() throws Exception {
+        StringCalculator calculator = new StringCalculator();
+        assertEquals(6, calculator.Add("1,2,3"));
+    }
+
+    @Test
+    public void testWithNewLineDelimiter() throws Exception {
+        StringCalculator calculator = new StringCalculator();
+        assertEquals(6, calculator.Add("1\n2,3"));
+    }
+
+    @Test
+    public void testWithCustomDelimiter() throws Exception {
+        StringCalculator calculator = new StringCalculator();
+        assertEquals(3, calculator.Add("//;\n1;2"));
+    }
+
+    @Test
+    public void testWithNegativeNumbers() {
+        StringCalculator calculator = new StringCalculator();
+        Exception exception = assertThrows(Exception.class, () -> calculator.Add("1,-2,3,-4"));
+        assertEquals("Negatives not allowed: [-2, -4]", exception.getMessage());
+    }
+
+    @Test
+    public void testWithNumbersBiggerThan1000() throws Exception {
+        StringCalculator calculator = new StringCalculator();
+        assertEquals(2, calculator.Add("2,1001"));
+    }
+
+    @Test
+    public void testWithAnyLengthDelimiter() throws Exception {
+        StringCalculator calculator = new StringCalculator();
+        assertEquals(6, calculator.Add("//[***]\n1***2***3"));
+    }
+
+    @Test
+    public void testWithMultipleDelimiters() throws Exception {
+        StringCalculator calculator = new StringCalculator();
+        assertEquals(6, calculator.Add("//[*][%]\n1*2%3"));
+    }
+
+    @Test
+    public void testWithMultipleDelimitersWithLongerThanOneChar() throws Exception {
+        StringCalculator calculator = new StringCalculator();
+        assertEquals(6, calculator.Add("//[***][%%]\n1***2%%3"));
+    }
+	
+}
