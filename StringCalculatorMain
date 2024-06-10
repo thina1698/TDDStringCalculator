@@ -1,0 +1,67 @@
+package com.tdd.stringcalculator;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
+
+public class StringCalculator {
+
+	public int Add(String numbers) throws Exception {
+		if (numbers.isEmpty()) {
+			return 0;
+		}
+
+//Support for custom delimiters
+		String delimiter = ",|\n";
+		if (numbers.startsWith("//")) {
+			int delimiterEndIndex = numbers.indexOf("\n");
+			String delimiterSection = numbers.substring(2, delimiterEndIndex);
+			
+			if (delimiterSection.startsWith("[")) {
+				delimiter = "";
+				int start = 0;
+				while (start < delimiterSection.length()) {
+					int end = delimiterSection.indexOf("]", start);
+					delimiter += Pattern.quote(delimiterSection.substring(start + 1, end)) + "|";
+					start = end + 1;
+				}
+				delimiter = delimiter.substring(0, delimiter.length() - 1);
+			} else {
+				delimiter = Pattern.quote(delimiterSection);
+			}
+			numbers = numbers.substring(delimiterEndIndex + 1);
+			
+		}
+			String[] numArray = numbers.split(delimiter);
+//Negative Numbers
+		int sum = 0;
+		List<Integer> negatives = new ArrayList<>();
+
+		for (String numStr : numArray) {
+			if (!numStr.isEmpty()) {
+				int num = Integer.parseInt(numStr);
+				if (num < 0) {
+					negatives.add(num);
+				} else if (num <= 1000) {
+					sum += num;
+				}
+			}
+		}
+
+		if (!negatives.isEmpty()) {
+			throw new Exception("Negatives values not allowed: " + negatives);
+		}
+
+		return sum;
+	}
+
+	public static void main(String[] args) {
+		StringCalculator calc = new StringCalculator();
+		try {
+			System.out.println(calc.Add("//[*][%]\n1*2%3")); // Expected output: 6
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+	}
+
+}
